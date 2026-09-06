@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake News Detector</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        @property --angle {
+            syntax: '<angle>';
+            initial-value: 0deg;
+            inherits: false;
+        }
+
+        body {
+            font-family: 'Consolas', 'Courier New', monospace;
+            background: #0a0e17;
+            background-image:
+                radial-gradient(circle at 20% 20%, rgba(0,255,170,0.06) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(0,150,255,0.08) 0%, transparent 40%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        #matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.35;
+        }
+
+        .page-header, .grid {
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .page-header h1 {
+            color: #00ffaa;
+            font-size: 2.2em;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 0 0 15px rgba(0,255,170,0.4);
+        }
+
+        .page-header p {
+            color: #5a7a8a;
+            margin-top: 10px;
+            font-size: 1em;
+            letter-spacing: 0.5px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+            align-items: start;
+        }
+
+        @media (max-width: 900px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+
+        /* Outer wrapper = rotating snake border */
+        .card {
+            position: relative;
+            border-radius: 14px;
+            padding: 2px;
+            background: conic-gradient(from var(--angle), #00ffaa 0%, transparent 18%, transparent 82%, #00ffaa 100%);
+            animation: rotateBorder 4s linear infinite;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        @keyframes rotateBorder {
+            to { --angle: 360deg; }
+        }
+
+        /* Inner box = actual solid dark card content */
+        .card-inner {
+            background: #10151f;
+            border-radius: 12px;
+            padding: 32px;
+            height: 100%;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .card-header .icon {
+            font-size: 1.5em;
+        }
+
+        .card h2 {
+            color: #e6f1f5;
+            font-size: 1.25em;
+            letter-spacing: 0.5px;
+        }
+
+        .card .subtitle {
+            color: #6b8494;
+            font-size: 0.88em;
+            margin-bottom: 22px;
+            line-height: 1.5;
+        }
+
+        textarea {
+            width: 100%;
+            height: 190px;
+            padding: 15px;
+            background: #0a0e17;
+            border: 1px solid #22303f;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #d4f5e9;
+            resize: vertical;
+            outline: none;
+            font-family: 'Consolas', monospace;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        textarea::placeholder { color: #45606f; }
+        textarea:focus {
+            border-color: #00ffaa;
+            box-shadow: 0 0 12px rgba(0,255,170,0.15);
+        }
+
+        .image-upload-wrapper {
+            border: 1px dashed #22303f;
+            border-radius: 8px;
+            padding: 30px 15px;
+            text-align: center;
+            transition: border-color 0.2s, background 0.2s;
+            cursor: pointer;
+            margin-bottom: 5px;
+            background: #0a0e17;
+        }
+        .image-upload-wrapper:hover {
+            border-color: #00c3ff;
+            background: #0d1420;
+        }
+        .image-upload-wrapper .upload-icon {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            filter: grayscale(0.3);
+        }
+        .image-upload-wrapper span {
+            display: block;
+            color: #6b8494;
+            font-size: 0.85em;
+        }
+        .image-upload-wrapper input[type="file"] {
+            display: none;
+        }
+        #file-name {
+            font-size: 0.8em;
+            color: #00c3ff;
+            font-weight: 600;
+            margin-top: 6px;
+            word-break: break-all;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            color: #0a0e17;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+            margin-top: 18px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            transition: transform 0.15s, box-shadow 0.2s;
+            font-family: inherit;
+        }
+        button:active { transform: scale(0.98); }
+
+        .btn-news {
+            background: #00ffaa;
+            box-shadow: 0 0 20px rgba(0,255,170,0.25);
+        }
+        .btn-news:hover { box-shadow: 0 0 30px rgba(0,255,170,0.45); }
+
+        .btn-image {
+            background: #00c3ff;
+            box-shadow: 0 0 20px rgba(0,195,255,0.25);
+        }
+        .btn-image:hover { box-shadow: 0 0 30px rgba(0,195,255,0.45); }
+
+        .result {
+            margin-top: 22px;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: 700;
+            animation: fadeIn 0.4s ease;
+            letter-spacing: 0.5px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .green {
+            background: rgba(0,255,170,0.08);
+            color: #00ffaa;
+            border: 1px solid rgba(0,255,170,0.4);
+        }
+        .red {
+            background: rgba(255,60,90,0.08);
+            color: #ff5c7a;
+            border: 1px solid rgba(255,60,90,0.4);
+        }
+
+        .confidence {
+            font-size: 0.5em;
+            margin-top: 6px;
+            opacity: 0.85;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .reason {
+            font-size: 0.45em;
+            margin-top: 10px;
+            font-weight: normal;
+            line-height: 1.5;
+            color: #8aa3ae;
+            letter-spacing: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="matrix-bg"></canvas>
+
+    <div class="page-header">
+        <h1>&gt; FAKE NEWS &amp; AI IMAGE DETECTOR_</h1>
+        <p>// Check news text, links, or images in seconds</p>
+    </div>
+
+    <div class="grid">
+
+        <!-- LEFT: News Detector -->
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-header">
+                <span class="icon">📰</span>
+                <h2>Fake News Detector</h2>
+            </div>
+            <p class="subtitle">Enter any news article, social media post, or link to check if it's Real or Fake.</p>
+
+            <form method="POST" action="/predict" id="news-form">
+                <textarea name="news" placeholder="Paste news text OR a news article link (URL) here..." required>{{ news or '' }}</textarea>
+                <button type="submit" class="btn-news">🔍 CHECK NOW</button>
+            </form>
+
+            {% if result %}
+            <div class="result {{ color }}">
+                {{ result }}
+                <div class="confidence">CONFIDENCE: {{ confidence }}</div>
+                {% if reason %}
+                <div class="reason">💡 {{ reason }}</div>
+                {% endif %}
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- RIGHT: Image Detector -->
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-header">
+                <span class="icon">🖼️</span>
+                <h2>AI Image Detector</h2>
+            </div>
+            <p class="subtitle">Upload an image to check whether it's real or AI-generated.</p>
+
+            <form method="POST" action="/detect-image" enctype="multipart/form-data" id="image-form">
+                <label class="image-upload-wrapper" for="image-input">
+                    <div class="upload-icon">📤</div>
+                    <span>Click to select an image</span>
+                    <div id="file-name"></div>
+                </label>
+                <input type="file" name="image" id="image-input" accept="image/*" required>
+                <button type="submit" class="btn-image">🖼️ CHECK IMAGE</button>
+            </form>
+
+            {% if img_result %}
+            <div class="result {{ 'green' if img_result == 'REAL' else 'red' }}">
+                {{ '✅ REAL IMAGE' if img_result == 'REAL' else '❌ AI-GENERATED IMAGE' }}
+                <div class="confidence">CONFIDENCE: {{ img_confidence }}%</div>
+            </div>
+            {% endif %}
+
+            {% if img_error %}
+            <div class="result red">
+                ⚠️ {{ img_error }}
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Matrix falling code background effect
+        const canvas = document.getElementById('matrix-bg');
+        const ctx2 = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const chars = "||";
+        const fontSize = 16;
+        let columns = Math.floor(canvas.width / fontSize);
+        let drops = Array(columns).fill(1);
+
+        function drawMatrix() {
+            ctx2.fillStyle = "rgba(10, 14, 23, 0.08)";
+            ctx2.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx2.fillStyle = "#00ffaa";
+            ctx2.font = fontSize + "px monospace";
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                ctx2.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrix, 50);
+
+        // Sound effect on form submit
+        function playSound() {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = ctx.createOscillator();
+            const gain = ctx.createGain();
+            oscillator.connect(gain);
+            gain.connect(ctx.destination);
+            oscillator.type = "sine";
+            oscillator.frequency.setValueAtTime(880, ctx.currentTime);
+            gain.gain.setValueAtTime(0.15, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+            oscillator.start();
+            oscillator.stop(ctx.currentTime + 0.25);
+        }
+
+        const textarea = document.querySelector('textarea[name="news"]');
+        const newsForm = document.getElementById('news-form');
+
+        textarea.addEventListener('keydown', function(event) {
+            if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                playSound();
+                newsForm.submit();
+            }
+        });
+
+        newsForm.addEventListener('submit', function() {
+            playSound();
+        });
+
+        const imageForm = document.getElementById('image-form');
+        const imageInput = document.getElementById('image-input');
+        const fileNameDisplay = document.getElementById('file-name');
+
+        imageInput.addEventListener('change', function() {
+            if (imageInput.files.length > 0) {
+                fileNameDisplay.textContent = imageInput.files[0].name;
+            }
+        });
+
+        imageForm.addEventListener('submit', function() {
+            playSound();
+        });
+    </script>
+
+</body>
+</html>
