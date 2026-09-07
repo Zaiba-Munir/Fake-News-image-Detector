@@ -56,9 +56,20 @@ http://127.0.0.1:5000
 ├── model/ # Trained AI image detection model
 ├── dataset/ # Training dataset
 ├── templates/
-│ └── index.html # Frontend UI
+│ └── index.html # Frontend UI                 
 └── .gitignore
 '''
+### Real News Detection
+![Real News Result](real-news-result.png)
+
+### Fake News Detection
+![Fake News Result](fake-news-result.png)
+
+### Real Image Detection
+![Real Image Result](real-image-result.png)
+
+### AI-Generated Image Detection
+![Fake Image Result](fake-image-result.png)
 
 ## 📸 Screenshots
 ### Reall news detection
