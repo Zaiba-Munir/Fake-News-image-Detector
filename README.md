@@ -60,19 +60,6 @@ http://127.0.0.1:5000
 └── .gitignore
 '''
 
-## 📸 Screenshots
-### Reall news detection
-![Real News Result](real-news-result.png)
-
-### Fake News Detection
-![Fake News Result](1%20image%20fake%20result.png)
-
-### Real Image Detection
-![Real Image Result](1%20image%20reall.png)
-
-### AI-Generated Image Detection
-![Fake Image Result](4%20fake%20result.png)
-
 
 ## 📸 Screenshots
 
