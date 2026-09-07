@@ -73,6 +73,21 @@ http://127.0.0.1:5000
 ### AI-Generated Image Detection
 ![Fake Image Result](4%20fake%20result.png)
 
+
+## 📸 Screenshots
+
+### Real News Detection
+![Real News Result](real-news-result.png)
+
+### Fake News Detection
+![Fake News Result](4%20fake%20result.png)
+
+### Real Image Detection
+![Real Image Result](1%20image%20reall.png)
+
+### AI-Generated Image Detection
+![Fake Image Result](1%20image%20fake%20result.png)
+
 ## ⚠️ Disclaimer
 
 This project is built for educational and demonstration purposes. AI-based fake news detection is not guaranteed to be 100% accurate — always cross-check with multiple reliable sources.
