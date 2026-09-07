@@ -1,0 +1,8 @@
+flask
+groq
+google-search-results
+requests
+beautifulsoup4
+tensorflow
+numpy
+python-dotenv
