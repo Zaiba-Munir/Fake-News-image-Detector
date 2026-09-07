@@ -47,7 +47,7 @@ python app.py
 http://127.0.0.1:5000
 
 '''
-![App Screenshot](1%20image.png)
+![App Screenshot](homepage.png)
 
 ## 📂 Project Structure
 ''' 
@@ -61,6 +61,8 @@ http://127.0.0.1:5000
 '''
 
 ## 📸 Screenshots
+### Reall news detection
+![Real News Result](real-news-result.png)
 
 ### Fake News Detection
 ![Fake News Result](1%20image%20fake%20result.png)
