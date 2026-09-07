@@ -64,7 +64,7 @@ http://127.0.0.1:5000
 ## 📸 Screenshots
 
 ### Real News Detection
-![Real News Result](real-news-result.png)
+![Real News Result](real-news-result(2).png)
 
 ### Fake News Detection
 ![Fake News Result](4%20fake%20result.png)
