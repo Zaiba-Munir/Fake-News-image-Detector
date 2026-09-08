@@ -70,7 +70,7 @@ http://127.0.0.1:5000
 ![Fake News Result](4%20fake%20result.png)
 
 ### Real Image Detection
-![Real Image Result](1%20image%20reall.png)
+![Real Image Result](l%20image%20result.png)
 
 ### AI-Generated Image Detection
 ![Fake Image Result](1%20image%20fake%20result.png)
