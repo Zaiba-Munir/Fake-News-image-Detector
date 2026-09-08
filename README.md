@@ -71,13 +71,13 @@ http://127.0.0.1:5000
 ![Real News Result](screenshot/real-news-result.png)
 
 ### Fake News Detection
-![Fake News Result](screenshot/4%20fake%20result.png)
+![Fake News Result](screenshot/fake-news-result.png)
 
 ### Real Image Detection
 ![Real Image Result](screenshot/real-image-result.png)
 
 ### AI-Generated Image Detection
-![Fake Image Result](screenshot/1%20image%20fake%20result.png)
+![Fake Image Result](screenshot/fake-image-result.png)
 
 ## ⚠️ Disclaimer
 
