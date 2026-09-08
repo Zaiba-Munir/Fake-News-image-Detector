@@ -85,4 +85,6 @@ This project is built for educational and demonstration purposes. AI-based fake 
 
 ## 👩‍💻 Author
 
-**Zaiba Munir**
+**Zaiba Munir**      
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue)](https://www.linkedin.com/in/zaiba-munir-010b363a0)
+
