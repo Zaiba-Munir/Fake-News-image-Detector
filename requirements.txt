@@ -6,4 +6,5 @@ beautifulsoup4
 tensorflow
 numpy
 python-dotenv
-gunicorn 
+gunicorn
+Pillow
